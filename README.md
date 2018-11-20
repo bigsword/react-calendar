@@ -1,5 +1,7 @@
 This is a simple demostration of React.js and Material-UI.
 
+Check out [https://bigsword.github.io/react-calendar/](https://bigsword.github.io/react-calendar/) to see the demo.
+
 ## How to run it
 
 In the project directory, you can run:
