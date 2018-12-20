@@ -5,11 +5,19 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import EventEditor from './components/EventEditor.js';
 import './index.css';
+import CalendarEvents from './CalendarEvents.js';
+
+let g_calendarEvents = new CalendarEvents();
+
+//let r = g_calendarEvents.getEvents(new Date(2018, 11, 18));
+//console.log(r);
+// TODO need to implement set event function.
+// how to get informed when things change?? observer??
 
 class Day extends React.Component {
 	constructor (props) {
 		super(props);
-
+	
     	this.state = {
 			showEventEditor: false,
 			holiday: false,
@@ -17,6 +25,11 @@ class Day extends React.Component {
 			busy: false,
 			anniversary: false,
 		};
+
+		this.date = new Date(this.props.year, this.props.month, this.props.day);
+
+		this.events = g_calendarEvents.getEvents(this.date);
+		this.events.forEach( element => this.state[element] = true);
 	}
 
 	_isToday () {
@@ -43,6 +56,17 @@ class Day extends React.Component {
 		return (day === 0) || (day === 6);
 	}
 
+	_getEvents() {
+		let events = [];
+
+		if (this.state.holiday) events.push('holiday') ;
+		if (this.state.birthday) events.push('birthday') ;
+		if (this.state.busy) events.push('busy') ;
+		if (this.state.anniversary) events.push('anniversary') ;
+
+		return events;
+	}
+
 	handleClick = () => {
 		this.setState({showEventEditor: true});
 	}
@@ -55,6 +79,16 @@ class Day extends React.Component {
 
 	toggleEvent = key => event => {
 		this.setState({[key]: event.target.checked });
+
+		// update the events here.
+		//
+		g_calendarEvents.setEvents(this.date, this._getEvents());
+	}
+
+	componentDidMount () {
+		//if (this.date.getTime() === g_calendarEvents.events[0].date.getTime()) {
+			//console.log(g_calendarEvents.events[0].date.toString());
+		//}
 	}
 
 	render () {
@@ -194,7 +228,7 @@ class Calendar extends React.Component {
 
 	render () {
 		let months = [];
-		for (let i = 0; i < 12; i++) {
+		for (let i = 10; i < 12; i++) {
 			months.push(<Month year={this.state.year} month={i} /*key={i}*//>)
 		}
 
